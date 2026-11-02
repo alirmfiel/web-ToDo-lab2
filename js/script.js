@@ -141,3 +141,85 @@ tasksSection.append(tasksHeading, filters, taskList, emptyMessage);
 
 main.append(calendar, formSection, tasksSection);
 document.body.append(header, main);
+
+
+const today = new Date();
+
+const months = [
+    "январь", "февраль", "март", "апрель",
+    "май", "июнь", "июль", "август",
+    "сентябрь", "октябрь", "ноябрь", "декабрь"
+];
+
+currentMonth.textContent = `${months[today.getMonth()]} ${today.getFullYear()}`;
+
+const monday = new Date(today);
+monday.setDate(today.getDate() - (today.getDay() + 6) % 7);
+
+const calendarDays = document.querySelectorAll(".calendar-day");
+
+calendarDays.forEach((day, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+
+    const number = day.querySelector(".day-number");
+    number.textContent = date.getDate();
+
+    if (date.toDateString() === today.toDateString()) {
+        day.classList.add("active");
+    }
+});
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+    taskList.replaceChildren();
+
+    emptyMessage.hidden = tasks.length > 0;
+
+    tasks.forEach(task => {
+        const item = document.createElement("li");
+        item.className = "task-item";
+        item.dataset.id = task.id;
+
+        const title = document.createElement("span");
+        title.className = "task-title";
+        title.textContent = task.title;
+
+        const date = document.createElement("span");
+        date.className = "task-date";
+        date.textContent = task.date || "Без даты";
+
+        item.append(title, date);
+        taskList.append(item);
+    });
+}
+
+taskForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const title = taskInput.value.trim();
+    const date = dateInput.value;
+
+    if (!title) {
+        return;
+    }
+
+    const task = {
+        id: crypto.randomUUID(),
+        title: title,
+        date: date,
+        completed: false
+    };
+
+    tasks.push(task);
+    saveTasks();
+    renderTasks();
+    taskForm.reset();
+});
+
+renderTasks();
