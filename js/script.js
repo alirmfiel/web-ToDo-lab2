@@ -172,10 +172,11 @@ calendarDays.forEach((day, index) => {
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+let draggedTaskId = null;
+
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
-
 
 
 function renderTasks() {
@@ -221,6 +222,55 @@ function renderTasks() {
         const item = document.createElement("li");
         item.className = "task-item";
         item.dataset.id = task.id;
+
+        item.draggable = sortSelect.value === "manual";
+
+        item.addEventListener("dragstart", event => {
+            draggedTaskId = task.id;
+            item.classList.add("dragging");
+            event.dataTransfer.effectAllowed = "move";
+            event.dataTransfer.setData("text/plain", task.id);
+        });
+
+        item.addEventListener("dragover", event => {
+            if (sortSelect.value !== "manual") {
+                return;
+            }
+
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+        });
+
+        item.addEventListener("drop", event => {
+            event.preventDefault();
+
+            if (sortSelect.value !== "manual") {
+                return;
+            }
+
+            if (!draggedTaskId || draggedTaskId === task.id) {
+                return;
+            }
+
+            const oldIndex = tasks.findIndex(item => item.id === draggedTaskId);
+            const newIndex = tasks.findIndex(item => item.id === task.id);
+
+            if (oldIndex === -1 || newIndex === -1) {
+                return;
+            }
+
+            const movedTask = tasks.splice(oldIndex, 1)[0];
+            tasks.splice(newIndex, 0, movedTask);
+            draggedTaskId = null;
+
+            saveTasks();
+            renderTasks();
+        });
+
+        item.addEventListener("dragend", () => {
+            draggedTaskId = null;
+            item.classList.remove("dragging");
+        });
 
         if (task.completed) {
             item.classList.add("completed");

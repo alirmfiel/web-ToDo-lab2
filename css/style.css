@@ -209,6 +209,20 @@ button:hover {
     outline-offset: 1px;
 }
 
+.task-item[draggable="true"] {
+    cursor: grab;
+}
+
+.task-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #ed929c;
+    cursor: grabbing;
+}
+
+.task-item[draggable="true"]:hover {
+    background-color: #fff5f6;
+}
+
 @media (max-width: 600px) {
     header,
     main {
