@@ -120,17 +120,52 @@ button:hover {
 }
 
 #task-list {
-    padding: 0;
+    position: relative;
+    padding: 0 0 0 35px;
     margin: 0;
     list-style: none;
 }
 
+#task-list::before {
+    content: "";
+    position: absolute;
+    top: 15px;
+    bottom: 15px;
+    left: 13px;
+    width: 2px;
+    background-color: #ed929c;
+}
+
 .task-item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 18px 10px;
-    border-bottom: 1px solid #eeeeee;
+    padding: 18px;
+    margin-bottom: 15px;
+    background-color: #fff1f3;
+    border: none;
+    border-radius: 12px;
+}
+
+.task-item::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -29px;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border: 3px solid #ed929c;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+.task-item.completed {
+    background-color: #f1f1f1;
+}
+
+.task-item.completed::before {
+    background-color: #ed929c;
 }
 
 .task-title {
@@ -164,11 +199,28 @@ button:hover {
 }
 
 .task-checkbox {
-    width: 20px;
-    height: 20px;
+    appearance: none;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
-    accent-color: #ed929c;
+    margin: 0;
+    padding: 0;
+    border: 2px solid #ed929c;
+    border-radius: 50%;
+    background-color: white;
     cursor: pointer;
+}
+
+.task-checkbox:checked {
+    background-color: #ed929c;
+}
+
+.task-checkbox:checked::after {
+    content: "✓";
+    display: block;
+    color: white;
+    font-size: 15px;
+    text-align: center;
 }
 
 .task-item.completed .task-title {
@@ -271,5 +323,23 @@ button:hover {
 
     .task-item {
         flex-wrap: wrap;
+    }
+    #task-list {
+        padding-left: 25px;
+    }
+
+    #task-list::before {
+        left: 8px;
+    }
+
+    .task-item {
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .task-item::before {
+        left: -22px;
+        width: 10px;
+        height: 10px;
     }
 }
