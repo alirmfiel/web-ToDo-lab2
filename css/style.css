@@ -154,6 +154,59 @@ button:hover {
     padding: 25px;
 }
 
+
+.task-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.task-checkbox {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    accent-color: #ed929c;
+    cursor: pointer;
+}
+
+.task-item.completed .task-title {
+    color: #999999;
+    text-decoration: line-through;
+}
+
+.edit-button {
+    background-color: #7998b7;
+}
+
+.delete-button {
+    background-color: #d77a85;
+}
+
+.edit-form {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.edit-form input[type="text"] {
+    flex: 1;
+    min-width: 160px;
+}
+
+@media (max-width: 600px) {
+    .task-info {
+        flex-basis: calc(100% - 40px);
+    }
+
+    .edit-form {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
 @media (max-width: 600px) {
     header,
     main {

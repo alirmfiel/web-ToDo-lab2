@@ -176,6 +176,7 @@ function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+
 function renderTasks() {
     taskList.replaceChildren();
 
@@ -186,6 +187,24 @@ function renderTasks() {
         item.className = "task-item";
         item.dataset.id = task.id;
 
+        if (task.completed) {
+            item.classList.add("completed");
+        }
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "task-checkbox";
+        checkbox.checked = task.completed;
+
+        checkbox.addEventListener("change", () => {
+            task.completed = checkbox.checked;
+            saveTasks();
+            renderTasks();
+        });
+
+        const info = document.createElement("div");
+        info.className = "task-info";
+
         const title = document.createElement("span");
         title.className = "task-title";
         title.textContent = task.title;
@@ -194,9 +213,92 @@ function renderTasks() {
         date.className = "task-date";
         date.textContent = task.date || "Без даты";
 
-        item.append(title, date);
+        info.append(title, date);
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.textContent = "Изменить";
+        editButton.className = "edit-button";
+
+        editButton.addEventListener("click", () => {
+            editTask(task.id);
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.textContent = "Удалить";
+        deleteButton.className = "delete-button";
+
+        deleteButton.addEventListener("click", () => {
+            tasks = tasks.filter(item => item.id !== task.id);
+            saveTasks();
+            renderTasks();
+        });
+
+        item.append(checkbox, info, editButton, deleteButton);
         taskList.append(item);
     });
+}
+
+
+function editTask(id) {
+    const task = tasks.find(item => item.id === id);
+
+    if (!task) {
+        return;
+    }
+
+    const item = Array.from(taskList.children).find(element => {
+        return element.dataset.id === id;
+    });
+
+    if (!item) {
+        return;
+    }
+
+    const form = document.createElement("form");
+    form.className = "edit-form";
+
+    const titleInput = document.createElement("input");
+    titleInput.type = "text";
+    titleInput.value = task.title;
+    titleInput.required = true;
+    titleInput.maxLength = 120;
+
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.value = task.date || "";
+
+    const saveButton = document.createElement("button");
+    saveButton.type = "submit";
+    saveButton.textContent = "Сохранить";
+
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.textContent = "Отмена";
+
+    cancelButton.addEventListener("click", () => {
+        renderTasks();
+    });
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const title = titleInput.value.trim();
+
+        if (!title) {
+            return;
+        }
+
+        task.title = title;
+        task.date = dateInput.value;
+
+        saveTasks();
+        renderTasks();
+    });
+
+    form.append(titleInput, dateInput, saveButton, cancelButton);
+    item.replaceChildren(form);
 }
 
 taskForm.addEventListener("submit", event => {
