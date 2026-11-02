@@ -196,15 +196,17 @@ button:hover {
     min-width: 160px;
 }
 
-@media (max-width: 600px) {
-    .task-info {
-        flex-basis: calc(100% - 40px);
-    }
+.filters input,
+.filters select {
+    width: 100%;
+    min-width: 0;
+    background-color: #ffffff;
+}
 
-    .edit-form {
-        flex-direction: column;
-        width: 100%;
-    }
+.filters input:focus,
+.filters select:focus {
+    outline: 2px solid #ed929c;
+    outline-offset: 1px;
 }
 
 @media (max-width: 600px) {
@@ -223,8 +225,17 @@ button:hover {
         padding: 15px;
     }
 
-    #task-form {
+    #task-form,
+    .edit-form {
         flex-direction: column;
+    }
+
+    .edit-form {
+        width: 100%;
+    }
+
+    .task-info {
+        flex-basis: calc(100% - 40px);
     }
 
     .filters {

@@ -177,12 +177,47 @@ function saveTasks() {
 }
 
 
+
 function renderTasks() {
     taskList.replaceChildren();
 
-    emptyMessage.hidden = tasks.length > 0;
+    const searchText = searchInput.value.trim().toLowerCase();
+    const selectedDate = searchDate.value;
+    const selectedStatus = statusFilter.value;
+    const selectedSort = sortSelect.value;
 
-    tasks.forEach(task => {
+    let filteredTasks = tasks.filter(task => {
+        const matchesTitle = task.title.toLowerCase().includes(searchText);
+        const matchesDate = !selectedDate || task.date === selectedDate;
+
+        let matchesStatus = true;
+
+        if (selectedStatus === "active") {
+            matchesStatus = !task.completed;
+        }
+
+        if (selectedStatus === "completed") {
+            matchesStatus = task.completed;
+        }
+
+        return matchesTitle && matchesDate && matchesStatus;
+    });
+
+    if (selectedSort === "asc") {
+        filteredTasks.sort((a, b) => {
+            return (a.date || "9999-12-31").localeCompare(b.date || "9999-12-31");
+        });
+    }
+
+    if (selectedSort === "desc") {
+        filteredTasks.sort((a, b) => {
+            return (b.date || "0000-01-01").localeCompare(a.date || "0000-01-01");
+        });
+    }
+
+    emptyMessage.hidden = filteredTasks.length > 0;
+
+    filteredTasks.forEach(task => {
         const item = document.createElement("li");
         item.className = "task-item";
         item.dataset.id = task.id;
@@ -239,7 +274,6 @@ function renderTasks() {
         taskList.append(item);
     });
 }
-
 
 function editTask(id) {
     const task = tasks.find(item => item.id === id);
@@ -325,3 +359,12 @@ taskForm.addEventListener("submit", event => {
 });
 
 renderTasks();
+
+
+searchInput.addEventListener("input", renderTasks);
+
+searchDate.addEventListener("change", renderTasks);
+
+statusFilter.addEventListener("change", renderTasks);
+
+sortSelect.addEventListener("change", renderTasks);
