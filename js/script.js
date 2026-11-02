@@ -1,0 +1,1 @@
+document.title = 'Список задач';
