@@ -1,5 +1,9 @@
-
 document.title = "To-Do List";
+
+const stylesheet = document.createElement("link");
+stylesheet.rel = "stylesheet";
+stylesheet.href = "../css/style.css";
+document.head.append(stylesheet);
 
 const viewport = document.createElement("meta");
 viewport.name = "viewport";
