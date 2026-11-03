@@ -275,6 +275,22 @@ button:hover {
     background-color: #fff5f6;
 }
 
+.task-info {
+    min-width: 0;
+}
+
+.task-title {
+    overflow-wrap: anywhere;
+}
+
+.task-item {
+    min-width: 0;
+}
+
+.edit-form input {
+    min-width: 0;
+}
+
 @media (max-width: 600px) {
     header,
     main {
@@ -341,5 +357,37 @@ button:hover {
         left: -22px;
         width: 10px;
         height: 10px;
+    }
+
+    #task-form input,
+    #task-form button {
+        width: 100%;
+    }
+
+    .edit-form input,
+    .edit-form button {
+        width: 100%;
+    }
+
+    .task-info {
+        flex-basis: calc(100% - 40px);
+    }
+
+    .task-item .edit-button,
+    .task-item .delete-button {
+        flex: 1;
+    }
+
+    .week {
+        gap: 2px;
+    }
+
+    .calendar-day {
+        padding: 10px 0;
+    }
+
+    .day-number {
+        width: 30px;
+        height: 30px;
     }
 }
