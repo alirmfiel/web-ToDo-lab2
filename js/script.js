@@ -170,7 +170,24 @@ calendarDays.forEach((day, index) => {
     }
 });
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let tasks = [];
+
+try {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks"));
+
+    if (Array.isArray(savedTasks)) {
+        tasks = savedTasks.filter(task => {
+            return task !== null &&
+                typeof task === "object" &&
+                typeof task.id === "string" &&
+                typeof task.title === "string" &&
+                typeof task.date === "string" &&
+                typeof task.completed === "boolean";
+        });
+    }
+} catch (error) {
+    tasks = [];
+}
 
 let draggedTaskId = null;
 
@@ -223,7 +240,12 @@ function renderTasks() {
         item.className = "task-item";
         item.dataset.id = task.id;
 
-        item.draggable = sortSelect.value === "manual";
+        const canDrag = sortSelect.value === "manual" &&
+            searchInput.value.trim() === "" &&
+            searchDate.value === "" &&
+            statusFilter.value === "all";
+
+        item.draggable = canDrag;
 
         item.addEventListener("dragstart", event => {
             draggedTaskId = task.id;
@@ -233,7 +255,7 @@ function renderTasks() {
         });
 
         item.addEventListener("dragover", event => {
-            if (sortSelect.value !== "manual") {
+            if (!canDrag) {
                 return;
             }
 
@@ -244,7 +266,7 @@ function renderTasks() {
         item.addEventListener("drop", event => {
             event.preventDefault();
 
-            if (sortSelect.value !== "manual") {
+            if (!canDrag) {
                 return;
             }
 
